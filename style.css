@@ -1,1 +1,130 @@
+/* Basic styles used throughout the website */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #222222;
+    line-height: 1.6;
+}
 
+/* Page title */
+header {
+    background-color: white;
+    padding: 24px 16px;
+    text-align: center;
+    border-bottom: 1px solid #dddddd;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+/* Navigation menu */
+nav {
+    background-color: #222222;
+    padding: 12px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 3px;
+}
+
+/* Change the link appearance when the mouse hovers over it */
+nav a:hover {
+    background-color: #555555;
+    text-decoration: underline;
+}
+
+/* Main content area */
+main {
+    max-width: 1000px;
+    margin: 24px auto;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #dddddd;
+}
+
+/* Simple grid for organizing content */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+}
+
+/* Individual grid cards */
+.card {
+    border: 1px solid #cccccc;
+    padding: 16px;
+    background-color: #fafafa;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #dddddd;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+th, td {
+    border: 1px solid #bbbbbb;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #eeeeee;
+}
+
+/* Homepage project note */
+#page-note {
+    border-left: 4px solid #555555;
+    padding: 12px;
+    background-color: #eeeeee;
+}
+
+/* Footer shared by every page */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 24px;
+    background-color: #222222;
+    color: white;
+}
+
+footer a {
+    color: white;
+}
+
+/* Adjust the website for smaller screens */
+@media (max-width: 700px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    nav a {
+        display: block;
+    }
+
+    main {
+        margin: 10px;
+        padding: 14px;
+    }
+}
