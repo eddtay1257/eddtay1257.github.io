@@ -113,18 +113,4 @@ footer a {
     color: white;
 }
 
-/* Adjust the website for smaller screens */
-@media (max-width: 700px) {
-    .card-grid {
-        grid-template-columns: 1fr;
-    }
-
-    nav a {
-        display: block;
-    }
-
-    main {
-        margin: 10px;
-        padding: 14px;
-    }
 }
