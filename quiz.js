@@ -2,10 +2,8 @@
 // Set the quiz time to 10 minutes
 var timeLeft = 600;
 var timerInterval;
-var startTime = Date.now();
 
 // Start the timer
-
 function startTimer() {
     timerInterval = setInterval(function() {
         timeLeft--;
@@ -16,6 +14,7 @@ function startTimer() {
         document.getElementById("timer").textContent =
             minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 
+        // Submit quiz when time runs out
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             submitQuiz();
@@ -23,7 +22,7 @@ function startTimer() {
     }, 1000);
 }
 
-
+// Start timer when page loads
 startTimer();
 
 // Correct answers
@@ -40,7 +39,7 @@ var answers = {
     q10: ["header", "nav", "main", "footer"]
 };
 
-// Text shown for each correct answer
+// Correct answer descriptions
 var correctText = {
     q1: "HyperText Markup Language",
     q2: "<p>",
@@ -54,10 +53,51 @@ var correctText = {
     q10: "header, nav, main, footer"
 };
 
-// Check the quiz answers
+// Answer choices for multiple-choice questions
+var choiceText = {
+    q3: {
+        a: "To structure webpage content",
+        b: "To edit photos",
+        c: "To create databases"
+    },
+    q4: {
+        a: "<p>",
+        b: "<h1>",
+        c: "<img>"
+    },
+    q5: {
+        a: "src",
+        b: "alt",
+        c: "href"
+    },
+    q6: {
+        a: "<img>",
+        b: "<table>",
+        c: "<ul>"
+    },
+    q7: {
+        a: "body",
+        b: "footer",
+        c: "head"
+    },
+    q8: {
+        a: "The appearance of a webpage",
+        b: "The internet connection",
+        c: "The computer's operating system"
+    },
+    q9: {
+        a: "header",
+        b: "footer",
+        c: "nav"
+    }
+};
+
+// Check quiz answers
 function submitQuiz() {
+
     var form = document.getElementById("quizForm");
 
+    // Prevent submitting more than once
     if (form.dataset.submitted === "yes") {
         return;
     }
@@ -67,6 +107,7 @@ function submitQuiz() {
 
     var score = 0;
     var results = document.getElementById("results");
+
     results.innerHTML = "";
 
     var questions = [
@@ -76,8 +117,11 @@ function submitQuiz() {
 
     var userAnswers = {};
 
+    // Collect answers from the form
     questions.forEach(function(question) {
+
         if (question === "q10") {
+
             userAnswers[question] = [];
 
             document.querySelectorAll(
@@ -85,10 +129,14 @@ function submitQuiz() {
             ).forEach(function(item) {
                 userAnswers[question].push(item.value);
             });
+
         } else if (question === "q1" || question === "q2") {
+
             userAnswers[question] =
                 form.elements[question].value.trim().toLowerCase();
+
         } else {
+
             var selected = document.querySelector(
                 'input[name="' + question + '"]:checked'
             );
@@ -97,47 +145,72 @@ function submitQuiz() {
         }
     });
 
-    // Compare each answer with the correct answer
+    // Compare answers and display results
     questions.forEach(function(question, index) {
+
         var correct = false;
 
         if (question === "q10") {
-            var selectedAnswers = userAnswers[question].sort();
+
+            var selectedAnswers = userAnswers[question].slice().sort();
             var rightAnswers = answers[question].slice().sort();
 
             correct =
                 JSON.stringify(selectedAnswers) ===
                 JSON.stringify(rightAnswers);
+
         } else {
+
             correct = userAnswers[question] === answers[question];
+
         }
 
         if (correct) {
             score++;
         }
 
+        // Get the answer selected by the user
+        var userAnswer = userAnswers[question];
+
+        if (question === "q10") {
+
+            userAnswer = userAnswer.length > 0 ?
+                userAnswer.join(", ") : "No answer";
+
+        } else if (choiceText[question]) {
+
+            userAnswer = choiceText[question][userAnswer] || "No answer";
+
+        } else {
+
+            userAnswer = userAnswer || "No answer";
+
+        }
+
+        // Create the result for each question
         var resultText = document.createElement("p");
 
+        resultText.textContent =
+            "Question " + (index + 1) +
+            ": " + (correct ? "Correct" : "Incorrect") +
+            ". Your answer: " + userAnswer +
+            ". Correct answer: " + correctText[question];
+
         if (correct) {
-            resultText.textContent =
-                "Question " + (index + 1) + ": Correct";
             resultText.className = "correct";
         } else {
-            resultText.textContent =
-                "Question " + (index + 1) + ": Incorrect. Correct answer: " +
-                correctText[question];
             resultText.className = "incorrect";
         }
 
         results.appendChild(resultText);
     });
 
-    // Calculate the time used
+    // Calculate time used
     var timeSpent = 600 - Math.max(timeLeft, 0);
     var minutesUsed = Math.floor(timeSpent / 60);
     var secondsUsed = timeSpent % 60;
 
-    // Display the final score
+    // Display pass or fail
     var finalResult = document.createElement("h2");
 
     if (score >= 6) {
@@ -150,17 +223,23 @@ function submitQuiz() {
 
     results.prepend(finalResult);
 
+    // Display total score
     var totalScore = document.createElement("p");
+
     totalScore.textContent = "Your Score: " + score + " out of 10";
+
     results.appendChild(totalScore);
 
+    // Display time used
     var timeResult = document.createElement("p");
+
     timeResult.textContent =
-        "Time Used: " + minutesUsed + " minutes and " +
-        secondsUsed + " seconds";
+        "Time Used: " + minutesUsed +
+        " minutes and " + secondsUsed + " seconds";
+
     results.appendChild(timeResult);
 
-    // Prevent answers from being changed after submission
+    // Disable answers after submission
     form.querySelectorAll("input").forEach(function(item) {
         item.disabled = true;
     });
@@ -168,18 +247,21 @@ function submitQuiz() {
     form.querySelector('button[type="submit"]').disabled = true;
 }
 
-// Submit the quiz
+// Submit the quiz when the button is clicked
 document.getElementById("quizForm").addEventListener("submit", function(event) {
     event.preventDefault();
     submitQuiz();
 });
 
-// Reset the quiz and restart the timer
+// Reset quiz and restart timer
 document.getElementById("resetButton").addEventListener("click", function() {
+
     setTimeout(function() {
+
         clearInterval(timerInterval);
 
         var form = document.getElementById("quizForm");
+
         form.dataset.submitted = "no";
 
         form.querySelectorAll("input, button").forEach(function(item) {
@@ -189,10 +271,10 @@ document.getElementById("resetButton").addEventListener("click", function() {
         document.getElementById("results").innerHTML = "";
 
         timeLeft = 600;
-        startTime = Date.now();
 
         document.getElementById("timer").textContent = "10:00";
 
         startTimer();
+
     }, 0);
 });
