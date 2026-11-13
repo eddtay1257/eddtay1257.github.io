@@ -5,23 +5,24 @@ var timerInterval;
 var startTime = Date.now();
 
 // Start the timer
+
 function startTimer() {
     timerInterval = setInterval(function() {
+        timeLeft--;
+
         var minutes = Math.floor(timeLeft / 60);
         var seconds = timeLeft % 60;
 
         document.getElementById("timer").textContent =
             minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 
-        timeLeft--;
-
-        // Automatically submit when time runs out
-        if (timeLeft < 0) {
+        if (timeLeft <= 0) {
             clearInterval(timerInterval);
             submitQuiz();
         }
     }, 1000);
 }
+
 
 startTimer();
 
